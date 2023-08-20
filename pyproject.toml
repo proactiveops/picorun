@@ -25,13 +25,13 @@ dev = [
 
 build = [
   "build==0.10.0",
+  "twine==4.0.2",
 ]
 
 [build-system]
 requires = [
   "setuptools==68.1.2",
   "setuptools-git-versioning==1.13.5",
-  "twine==4.0.2",
   "wheel==0.41.1",
 ]
 build-backend = "setuptools.build_meta"
