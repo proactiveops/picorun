@@ -38,16 +38,16 @@ jobs:
       id: publish
       uses: pypa/gh-action-pypi-publish@release/v1
 
-    - name: Create GitHub Release
+    - name: Create release
       id: create-release
-      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
-        draft: false
-        prerelease: false
+        tag: ${{ github.ref_name }}
+      run: |
+        gh release create "$tag" \
+            --repo="$GITHUB_REPOSITORY" \
+            --title="PicoRun ${tag#v}" \
+            --generate-notes
 
     - name: Get Asset name
       id: asset-name
