@@ -39,31 +39,25 @@ jobs:
       id: publish
       uses: pypa/gh-action-pypi-publish@release/v1
 
+    - name: Set Tag
+      id: set-tag
+      run: |
+        echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
     - name: Create release
       id: create-release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ github.ref_name }}
+        tag: ${{ env.tag }}
       run: |
         gh release create "$tag" \
-            --repo="$GITHUB_REPOSITORY" \
-            --title="PicoRun ${tag#v}" \
+            --title="PicoRun ${tag}" \
             --generate-notes
 
-    - name: Get Asset name
-      id: asset-name
-      run: |
-        export PKG=$(ls dist/ | grep tar)
-        set -- $PKG
-        echo "name=$1" >> $GITHUB_ENV
-
-    - name: Upload Release Asset (sdist) to GitHub
-      id: upload-release-assets
-      uses: actions/upload-release-asset@v1
+    - name: Upload Assets
+      id: upload-assets
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist/${{ env.name }}
-        asset_name: ${{ env.name }}
-        asset_content_type: application/zip
+        tag: ${{ env.tag }}
+      run: |
+        gh release upload $tag dist/*.whl dist/*.tar.gz
