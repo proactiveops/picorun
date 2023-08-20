@@ -4,14 +4,15 @@ authors = [
     {name = "Dave Hall", email = "skwashd@gmail.com"},
 ]
 description = "PicoFun runtime components"
-version = "0.0.1"
 
 dependencies = [
   "requests==2.31.0",
 ]
 
-# license = {file = "LICENSE.txt"}
-# readme = {file = "README.md"}
+license = {file = "LICENSE.txt"}
+readme = "README.md"
+
+dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = [
@@ -22,12 +23,21 @@ dev = [
   "ruff==0.0.284",
 ]
 
+build = [
+  "build==0.10.0",
+]
+
 [build-system]
 requires = [
-  "setuptools",
-  "wheel"
+  "setuptools==68.1.2",
+  "setuptools-git-versioning==1.13.5",
+  "twine==4.0.2",
+  "wheel==0.41.1",
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
 
 [tool.black]
 line-length = 88
