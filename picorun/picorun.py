@@ -1,18 +1,9 @@
 """PicoRun runtime classes."""
-
-from typing import Any
+from typing import Any, ClassVar
 
 from requests import Response
 
-
-class ApiError(Exception):
-
-    """Exception raised when an API call fails."""
-
-    def __init__(self, message: str, status_code: int) -> None:
-        """Construct an ApiError."""
-        super().__init__(f"Error {status_code}: {message}")
-        self.status_code = status_code
+import picorun.errors
 
 
 class ApiRequestArgs:
@@ -45,13 +36,29 @@ class ApiResponse:
 
     """API response."""
 
+    _error_mapping: ClassVar[dict[int : picorun.errors.ApiError]] = {
+        400: picorun.errors.Http400Error,
+        401: picorun.errors.Http401Error,
+        403: picorun.errors.Http403Error,
+        404: picorun.errors.Http404Error,
+        405: picorun.errors.Http405Error,
+        418: picorun.errors.Http418Error,
+        429: picorun.errors.Http429Error,
+        500: picorun.errors.Http500Error,
+        501: picorun.errors.Http501Error,
+        502: picorun.errors.Http502Error,
+    }
+
     def __init__(self, response: Response) -> None:
         """Construct an ApiResponse."""
         self.response = response
         self.status_code = response.status_code
         self.headers = response.headers
         self.body = response.text
-        if "application/json" in response.headers["Content-Type"]:
+        if (
+            "Content-Type" in response.headers
+            and "application/json" in response.headers["Content-Type"]
+        ):
             self.body = response.json()
 
     def asdict(self) -> dict[str, Any]:
@@ -61,3 +68,18 @@ class ApiResponse:
             "headers": dict(self.headers),
             "body": self.body,
         }
+
+    def raise_for_status(self) -> None:
+        """
+        Raise an exception if an error response is received.
+
+        This method is inspired by the Requests' method of the same name. The difference
+        is PicoRun raises classed errors for many common HTTP error codes. This makes it
+        easier to handle the errors in Step Functions.
+        """
+        if self.status_code in self._error_mapping:
+            exp = self._error_mapping[self.status_code]
+            raise exp(self.body)
+
+        if self.status_code >= 400:
+            raise picorun.errors.ApiError(self.body, self.status_code)
