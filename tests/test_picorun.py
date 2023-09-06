@@ -2,7 +2,8 @@
 
 import pytest
 
-from picorun import ApiError, ApiRequestArgs, ApiResponse
+import picorun
+import picorun.errors
 
 
 def mock_response(
@@ -10,26 +11,22 @@ def mock_response(
     headers: dict[str, str] | None = None,
     text: str | None = None,
     json: dict[str, str] | None = None,
-) -> "MockResponse": # noqa: F821 class defined in this function
+) -> "MockResponse":  # noqa: F821 class defined in this function
     """Mock requests.Response."""
+
     class MockResponse:
         def __init__(self) -> None:
             self.status_code = status_code
             self.headers = headers or {}
             self.text = text
             self.json = lambda: json
-    return MockResponse()
 
-def test_api_error() -> None:
-    """Test ApiError."""
-    error = ApiError("message", 404)
-    assert str(error) == "Error 404: message"
-    assert error.status_code == 404
+    return MockResponse()
 
 
 def test_api_request_args() -> None:
     """Test ApiRequestArgs."""
-    args = ApiRequestArgs(
+    args = picorun.picorun.ApiRequestArgs(
         path={"path": "value"},
         query={"query": "value"},
         payload={"payload": "value"},
@@ -49,9 +46,10 @@ def test_api_request_args() -> None:
 def test_api_request_args_invalid_args() -> None:
     """Test ApiRequestArgs with invalid arguments."""
     with pytest.raises(TypeError):
-        _ = ApiRequestArgs(
+        _ = picorun.picorun.ApiRequestArgs(
             invalid={"invalid": "value"},
         )
+
 
 def test_api_response() -> None:
     """Test ApiResponse."""
@@ -60,7 +58,7 @@ def test_api_response() -> None:
         headers={"Content-Type": "text/plain"},
         text="body",
     )
-    api_response = ApiResponse(response)
+    api_response = picorun.picorun.ApiResponse(response)
     assert api_response.response == response
     assert api_response.status_code == 200
     assert api_response.headers == {"Content-Type": "text/plain"}
@@ -71,6 +69,14 @@ def test_api_response() -> None:
         "body": "body",
     }
 
+
+def test_api_response_no_content_type() -> None:
+    """Test ApiResponse with no content type header."""
+    response = mock_response(status_code=200, text="")
+    api_response = picorun.picorun.ApiResponse(response)
+    assert api_response.body == ""
+
+
 def test_api_response_json() -> None:
     """Test ApiResponse with JSON body."""
     response = mock_response(
@@ -78,10 +84,37 @@ def test_api_response_json() -> None:
         headers={"Content-Type": "application/json"},
         json={"key": "value"},
     )
-    api_response = ApiResponse(response)
+    api_response = picorun.picorun.ApiResponse(response)
     assert api_response.body == {"key": "value"}
     assert api_response.asdict() == {
         "statusCode": 200,
         "headers": {"Content-Type": "application/json"},
         "body": {"key": "value"},
     }
+
+
+@pytest.mark.parametrize(
+    ("code", "exp"),
+    [
+        (400, picorun.errors.Http400Error),
+        (401, picorun.errors.Http401Error),
+        (403, picorun.errors.Http403Error),
+        (404, picorun.errors.Http404Error),
+        (405, picorun.errors.Http405Error),
+        (418, picorun.errors.Http418Error),
+        (429, picorun.errors.Http429Error),
+        (500, picorun.errors.Http500Error),
+        (501, picorun.errors.Http501Error),
+        (502, picorun.errors.Http502Error),
+        (451, picorun.errors.ApiError),
+    ],
+)
+def test_api_response_error_errors(code: int, exp: picorun.errors.ApiError) -> None:
+    """Test ApiResponse with 400 Bad Request Error."""
+    response = mock_response(
+        status_code=code,
+        text="",
+    )
+    api_response = picorun.picorun.ApiResponse(response)
+    with pytest.raises(exp):
+        api_response.raise_for_status()
