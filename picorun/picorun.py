@@ -27,7 +27,8 @@ class ApiRequestArgs:
         """Convert the object to a dictionary of keyword arguments for requests."""
         output = {}
         for property in ["headers", "json", "query"]:
-            output[property] = getattr(self, property)
+            key = property if property != "query" else "params"
+            output[key] = getattr(self, property)
         return output
 
 
