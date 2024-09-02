@@ -18,17 +18,16 @@ class ApiRequestArgs:
         headers: dict[str, Any] | None = None,
     ) -> None:
         """Construct an object with the arguments for the API call."""
-        self.path = path
-        self.query = query
-        self.json = payload
-        self.headers = headers
+        self.path = path if isinstance(path, dict) else {}
+        self.query = query if isinstance(query, dict) else {}
+        self.json = payload if isinstance(payload, dict) else {}
+        self.headers = headers if isinstance(headers, dict) else {}
 
     def to_kwargs(self) -> dict[str, Any]:
         """Convert the object to a dictionary of keyword arguments for requests."""
         output = {}
         for property in ["headers", "json", "query"]:
-            if getattr(self, property):
-                output[property] = getattr(self, property)
+            output[property] = getattr(self, property)
         return output
 
 
