@@ -1,6 +1,5 @@
 """Test picorun classes."""
 
-
 import picorun.errors
 
 
