@@ -8,7 +8,6 @@ import picorun.errors
 
 
 class ApiRequestArgs:
-
     """Arguments for making an API call with requests."""
 
     def __init__(
@@ -33,7 +32,6 @@ class ApiRequestArgs:
 
 
 class ApiResponse:
-
     """API response."""
 
     _error_mapping: ClassVar[dict[int : picorun.errors.ApiError]] = {

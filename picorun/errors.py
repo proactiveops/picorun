@@ -2,7 +2,6 @@
 
 
 class ApiError(Exception):
-
     """Exception raised when an API call fails."""
 
     def __init__(self, message: str, status_code: int) -> None:
@@ -12,7 +11,6 @@ class ApiError(Exception):
 
 
 class Http400Error(ApiError):
-
     """HTTP 400 Bad Request Error."""
 
     def __init__(self, message: str) -> None:
@@ -21,7 +19,6 @@ class Http400Error(ApiError):
 
 
 class Http401Error(ApiError):
-
     """HTTP 401 Unauthorised Error."""
 
     def __init__(self, message: str) -> None:
@@ -30,7 +27,6 @@ class Http401Error(ApiError):
 
 
 class Http403Error(ApiError):
-
     """HTTP 403 Forbidden Error."""
 
     def __init__(self, message: str) -> None:
@@ -39,7 +35,6 @@ class Http403Error(ApiError):
 
 
 class Http404Error(ApiError):
-
     """HTTP 404 Not Found Error."""
 
     def __init__(self, message: str) -> None:
@@ -48,7 +43,6 @@ class Http404Error(ApiError):
 
 
 class Http405Error(ApiError):
-
     """HTTP 405 Method Not Allowed Error."""
 
     def __init__(self, message: str) -> None:
@@ -57,7 +51,6 @@ class Http405Error(ApiError):
 
 
 class Http418Error(ApiError):
-
     """HTTP 418 Teapot Error."""
 
     def __init__(self, message: str) -> None:
@@ -66,7 +59,6 @@ class Http418Error(ApiError):
 
 
 class Http429Error(ApiError):
-
     """HTTP 429 Too Many Requests Error."""
 
     def __init__(self, message: str) -> None:
@@ -75,7 +67,6 @@ class Http429Error(ApiError):
 
 
 class Http500Error(ApiError):
-
     """HTTP 500 Internal Server Error Error."""
 
     def __init__(self, message: str) -> None:
@@ -84,7 +75,6 @@ class Http500Error(ApiError):
 
 
 class Http501Error(ApiError):
-
     """HTTP 501 Not Implemented Error."""
 
     def __init__(self, message: str) -> None:
@@ -93,7 +83,6 @@ class Http501Error(ApiError):
 
 
 class Http502Error(ApiError):
-
     """HTTP 502 Bad Gateway Error."""
 
     def __init__(self, message: str) -> None:
