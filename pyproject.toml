@@ -16,7 +16,6 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = [
-  "black==24.8.0",
   "pytest==8.3.2",
   "pytest-cov==5.0.0",
   "pytest-mock==3.14.0",
@@ -39,34 +38,13 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools-git-versioning]
 enabled = true
 
-[tool.black]
-line-length = 88
-target-version = ['py310']
-include = '\.pyi?$'
-exclude = '''
-(
-  /(
-      \.git
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-  )/
-  | \.nox
-)
-'''
-
 [tool.pytest.ini_options]
 addopts = "--cov --cov-report term-missing"
 
 [tool.ruff.lint]
 # Rules listed at https://github.com/charliermarsh/ruff#supported-rules
 select = ["B", "D", "E", "F", "G", "I", "N", "S", "W", "ANN" ,"BLE", "C4", "C90", "DTZ", "ERA", "PLW", "PT", "RET", "RUF", "SIM", "TRY", "UP"]
-ignore = ["D211", "D212", "E501", "F403", "F405", "ANN101"]
+ignore = ["D203", "D211", "D212", "E501", "F403", "F405", "ANN101"]
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = ["B", "D", "E", "F", "G", "I", "N", "S", "W", "ANN" ,"BLE", "C4", "C90", "DTZ", "ERA", "PLW", "PT", "RET", "RUF", "SIM", "TRY", "UP"]
