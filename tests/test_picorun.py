@@ -43,12 +43,18 @@ def test_api_request_args() -> None:
     }
 
 
-def test_api_request_args_invalid_args() -> None:
-    """Test ApiRequestArgs with invalid arguments."""
-    with pytest.raises(TypeError):
-        _ = picorun.picorun.ApiRequestArgs(
-            invalid={"invalid": "value"},
-        )
+def test_api_request_empty_args() -> None:
+    """Test ApiRequestArgs with empty arguments."""
+    args = picorun.picorun.ApiRequestArgs()
+    assert args.path == {}
+    assert args.query == {}
+    assert args.json == {}
+    assert args.headers == {}
+    assert args.to_kwargs() == {
+        "headers": {},
+        "json": {},
+        "query": {},
+    }
 
 
 def test_api_response() -> None:
