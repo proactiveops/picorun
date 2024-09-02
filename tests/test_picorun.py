@@ -39,7 +39,7 @@ def test_api_request_args() -> None:
     assert args.to_kwargs() == {
         "headers": {"headers": "value"},
         "json": {"payload": "value"},
-        "query": {"query": "value"},
+        "params": {"query": "value"},
     }
 
 
@@ -53,7 +53,7 @@ def test_api_request_empty_args() -> None:
     assert args.to_kwargs() == {
         "headers": {},
         "json": {},
-        "query": {},
+        "params": {},
     }
 
 
