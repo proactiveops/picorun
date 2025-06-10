@@ -6,7 +6,7 @@ authors = [
 description = "PicoFun runtime components"
 
 dependencies = [
-  "requests==2.32.3",
+  "requests==2.32.4",
 ]
 
 license = {file = "LICENSE.txt"}
